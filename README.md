@@ -27,12 +27,13 @@ This project demonstrates:
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/gekid00/inception.git
 cd inception
 ```
 
-2. Configure your login in `srcs/.env`:
+2. Create and configure the `.env` file:
 ```bash
+cp srcs/.env.example srcs/.env
 nano srcs/.env
 # Change the first line:
 USER=your_login

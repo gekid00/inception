@@ -1,0 +1,14 @@
+# Environment variables (contains passwords)
+srcs/.env
+
+# Data directories
+data/
+
+# Claude settings
+.claude/
+
+# Temporary files
+*.swp
+*.swo
+*~
+.DS_Store

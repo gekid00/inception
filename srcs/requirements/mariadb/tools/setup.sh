@@ -38,4 +38,4 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 fi
 
 # Relancer MariaDB en mode normal avec le CMD
-exec "$@"
+exec "$@" --user=mysql --datadir=/var/lib/mysql

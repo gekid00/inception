@@ -21,7 +21,12 @@ fi
 
 # Télécharger WordPress si pas déjà fait
 if [ ! -f /var/www/html/wp-config.php ]; then
-    wp core download --allow-root
+    echo "Downloading WordPress..."
+    wget -q https://wordpress.org/latest.tar.gz -O /tmp/wordpress.tar.gz
+    echo "Extracting WordPress..."
+    tar -xzf /tmp/wordpress.tar.gz -C /var/www/html --strip-components=1
+    rm /tmp/wordpress.tar.gz
+    echo "WordPress downloaded and extracted!"
 
     # Créer wp-config.php
     wp config create \

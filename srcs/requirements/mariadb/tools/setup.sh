@@ -16,8 +16,8 @@ FLUSH PRIVILEGES;
 EOF
 
     # Démarrer MariaDB avec le script d'init
-    exec mysqld --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --init-file=/tmp/init.sql
+    exec mysqld --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --port=3306 --skip-networking=0 --init-file=/tmp/init.sql
 fi
 
 # Relancer MariaDB en mode normal
-exec mysqld --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0
+exec mysqld --user=mysql --datadir=/var/lib/mysql --bind-address=0.0.0.0 --port=3306 --skip-networking=0

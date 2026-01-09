@@ -10,14 +10,16 @@ mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
 pid="$!"
 
 # Attendre que MariaDB soit prêt
-for i in {30..0}; do
-    if mysqladmin ping &>/dev/null; then
+i=30
+while [ $i -gt 0 ]; do
+    if mysqladmin ping >/dev/null 2>&1; then
         break
     fi
+    i=$((i-1))
     sleep 1
 done
 
-if [ "$i" = 0 ]; then
+if [ $i -eq 0 ]; then
     echo "MariaDB failed to start"
     exit 1
 fi

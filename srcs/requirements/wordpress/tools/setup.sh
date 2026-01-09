@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
 # Configuration de php-fpm pour écouter sur le port 9000
-sed -i 's|listen = /run/php/php8.2-fpm.sock|listen = 9000|g' /etc/php/8.2/fpm/pool.d/www.conf
-sed -i 's|;listen.owner = www-data|listen.owner = www-data|g' /etc/php/8.2/fpm/pool.d/www.conf
-sed -i 's|;listen.group = www-data|listen.group = www-data|g' /etc/php/8.2/fpm/pool.d/www.conf
+sed -i 's|listen = 127.0.0.1:9000|listen = 9000|g' /etc/php82/php-fpm.d/www.conf
+sed -i 's|;listen.owner = nobody|listen.owner = nobody|g' /etc/php82/php-fpm.d/www.conf
+sed -i 's|;listen.group = nobody|listen.group = nobody|g' /etc/php82/php-fpm.d/www.conf
 
 # Attendre que MariaDB soit prêt
 echo "Waiting for MariaDB..."

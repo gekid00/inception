@@ -1,9 +1,8 @@
-FROM debian:bookworm
+FROM alpine:3.19
 
-RUN apt-get update && apt-get install -y \
+RUN apk update && apk add --no-cache \
     nginx \
-    openssl \
-    && rm -rf /var/lib/apt/lists/*
+    openssl
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY tools/setup.sh /usr/local/bin/setup.sh

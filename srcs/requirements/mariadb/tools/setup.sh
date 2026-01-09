@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Initialiser MariaDB si pas déjà fait
 if [ ! -d "/var/lib/mysql/mysql" ]; then
@@ -6,7 +6,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 fi
 
 # Démarrer MariaDB en arrière-plan pour la configuration
-mysqld --user=mysql --datadir=/var/lib/mysql &
+mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
 pid="$!"
 
 # Attendre que MariaDB soit prêt

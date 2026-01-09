@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Génération des certificats SSL auto-signés
 if [ ! -f /etc/nginx/ssl/nginx.crt ]; then

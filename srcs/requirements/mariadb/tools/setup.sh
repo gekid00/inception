@@ -2,37 +2,40 @@
 
 # Initialiser MariaDB si pas déjà fait
 if [ ! -d "/var/lib/mysql/mysql" ]; then
+    echo "Initializing MariaDB..."
     mysql_install_db --user=mysql --datadir=/var/lib/mysql
-fi
 
-# Démarrer MariaDB en arrière-plan pour la configuration
-mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking &
-pid="$!"
+    # Démarrer MariaDB temporairement pour configuration initiale
+    mysqld --user=mysql --datadir=/var/lib/mysql --skip-networking --skip-grant-tables &
+    pid="$!"
 
-# Attendre que MariaDB soit prêt
-i=30
-while [ $i -gt 0 ]; do
-    if mysqladmin ping >/dev/null 2>&1; then
-        break
+    # Attendre que MariaDB soit prêt
+    i=30
+    while [ $i -gt 0 ]; do
+        if mysqladmin ping >/dev/null 2>&1; then
+            break
+        fi
+        i=$((i-1))
+        sleep 1
+    done
+
+    if [ $i -eq 0 ]; then
+        echo "MariaDB failed to start"
+        exit 1
     fi
-    i=$((i-1))
-    sleep 1
-done
 
-if [ $i -eq 0 ]; then
-    echo "MariaDB failed to start"
-    exit 1
+    # Configuration initiale de la base de données
+    mysql -e "FLUSH PRIVILEGES;"
+    mysql -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
+    mysql -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';"
+    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+    mysql -e "FLUSH PRIVILEGES;"
+
+    # Arrêter MariaDB temporaire
+    kill "$pid"
+    wait "$pid"
 fi
 
-# Configuration de la base de données
-mysql -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
-mysql -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-mysql -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';"
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
-mysql -e "FLUSH PRIVILEGES;"
-
-# Arrêter MariaDB temporaire
-mysqladmin -u root -p${MYSQL_ROOT_PASSWORD} shutdown
-
-# Relancer MariaDB avec le CMD
+# Relancer MariaDB en mode normal avec le CMD
 exec "$@"

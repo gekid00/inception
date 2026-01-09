@@ -21,7 +21,7 @@ clean:
 
 fclean:
 	@cd srcs && docker-compose down -v
-	@docker system prune -af
+	@docker system prune -f
 	@sudo rm -rf /home/$(USER)/data
 
 .PHONY: all down re clean fclean

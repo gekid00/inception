@@ -12,7 +12,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     # Attendre que MariaDB soit prêt
     i=30
     while [ $i -gt 0 ]; do
-        if mysqladmin ping >/dev/null 2>&1; then
+        if mysqladmin --socket=/run/mysqld/mysqld.sock ping >/dev/null 2>&1; then
             break
         fi
         i=$((i-1))
@@ -25,12 +25,12 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
     fi
 
     # Configuration initiale de la base de données
-    mysql -e "FLUSH PRIVILEGES;"
-    mysql -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
-    mysql -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-    mysql -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';"
-    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
-    mysql -e "FLUSH PRIVILEGES;"
+    mysql --socket=/run/mysqld/mysqld.sock -u root -e "FLUSH PRIVILEGES;"
+    mysql --socket=/run/mysqld/mysqld.sock -u root -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
+    mysql --socket=/run/mysqld/mysqld.sock -u root -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+    mysql --socket=/run/mysqld/mysqld.sock -u root -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';"
+    mysql --socket=/run/mysqld/mysqld.sock -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+    mysql --socket=/run/mysqld/mysqld.sock -u root -e "FLUSH PRIVILEGES;"
 
     # Arrêter MariaDB temporaire
     kill "$pid"

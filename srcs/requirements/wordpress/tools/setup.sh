@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Lire les mots de passe depuis les secrets Docker
+MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+WP_ADMIN_PASSWORD=$(grep 'WP_ADMIN_PASSWORD=' /run/secrets/credentials | cut -d'=' -f2)
+WP_USER_PASSWORD=$(grep 'WP_USER_PASSWORD=' /run/secrets/credentials | cut -d'=' -f2)
+
 # Configuration de php-fpm pour écouter sur le port 9000
 sed -i 's|listen = 127.0.0.1:9000|listen = 9000|g' /etc/php82/php-fpm.d/www.conf
 sed -i 's|;listen.owner = nobody|listen.owner = nobody|g' /etc/php82/php-fpm.d/www.conf

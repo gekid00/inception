@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Lire les mots de passe depuis les secrets Docker
+MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+
 # Initialiser MariaDB si pas déjà fait
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "Initializing MariaDB..."

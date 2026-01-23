@@ -1,6 +1,9 @@
 # Environment variables (contains passwords)
 srcs/.env
 
+# Secrets directory (contains passwords)
+secrets/
+
 # Data directories
 data/
 

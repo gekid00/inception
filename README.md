@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by login.*
+*This project has been created as part of the 42 curriculum by rbourkai.*
 
 # Inception
 
@@ -64,12 +64,12 @@ This will automatically:
 
 ### Credentials
 
-All credentials are stored in the `srcs/.env` file. Default credentials:
-- **WordPress Admin**: wproot / SecureAdminPass123!
-- **WordPress Author**: author_user / UserPass123!
-- **Database**: wpuser / wppass123
+Credentials are stored in the `secrets/` directory:
+- `secrets/db_password.txt` - Database user password
+- `secrets/db_root_password.txt` - Database root password  
+- `secrets/credentials.txt` - WordPress passwords
 
-**Important**: Change these passwords in the `.env` file before deploying to production.
+**Important**: Change these passwords before deploying.
 
 ## Project Description
 
@@ -80,7 +80,7 @@ This project uses **Docker** to containerize three main services:
 2. **WordPress**: CMS with php-fpm
 3. **MariaDB**: Database server
 
-Each service runs in an isolated container built from **Debian Bookworm** base images, ensuring:
+Each service runs in an isolated container built from **Alpine Linux 3.19** base images, ensuring:
 - Process isolation
 - Resource management
 - Reproducible environments
@@ -95,9 +95,9 @@ Each service runs in an isolated container built from **Debian Bookworm** base i
 
 ### Main Design Choices
 
-1. **Debian Bookworm**: Chosen for stability and security updates
+1. **Alpine Linux 3.19**: Chosen for its lightweight footprint and security
 2. **Environment Variables**: Used for configuration in `.env` file (not hardcoded in Dockerfiles)
-3. **Named Volumes**: For persistent data storage with bind mounts to `/home/login/data`
+3. **Named Volumes**: For persistent data storage, mapped to `/home/login/data`
 4. **Bridge Network**: Custom network for service communication
 5. **TLSv1.2/1.3**: Modern encryption protocols for NGINX
 6. **php-fpm**: Separate PHP processing from web server for better performance
@@ -127,7 +127,7 @@ Each service runs in an isolated container built from **Debian Bookworm** base i
 | **Rotation** | Easier to rotate | Edit .env and restart |
 | **Best for** | Production secrets | Development/single-host |
 
-**Choice**: Environment variables in `.env` file are used for this project. The `.env` file is excluded from git, providing adequate security for a development/educational environment. For production, Docker Swarm secrets would be preferred.
+**Choice**: Docker secrets are used for sensitive data (passwords), while environment variables in `.env` are used for non-sensitive configuration (usernames, domain). Secrets are mounted in `/run/secrets/` inside containers.
 
 #### Docker Network vs Host Network
 
@@ -151,9 +151,7 @@ Each service runs in an isolated container built from **Debian Bookworm** base i
 | **Permissions** | Docker handles | Manual handling |
 | **Backup** | Docker CLI | Standard tools |
 
-**Choice**: Named volumes with bind mounts combine the best of both worlds:
-- Docker manages volumes (portability)
-- Data stored in known location (`/home/login/data`) for easy access and backup
+**Choice**: Named volumes with local driver options are used. Docker manages the volumes while data is stored in `/home/login/data` as required by the subject.
 
 ## Resources
 

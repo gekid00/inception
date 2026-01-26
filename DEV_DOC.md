@@ -327,9 +327,9 @@ volumes:
       device: /home/${USER}/data/wordpress
 ```
 
-This creates **named volumes** with **bind mounts**:
-- Docker manages volumes (portability)
-- Data stored in known location (easy access)
+This creates **named volumes** with local driver options:
+- Docker manages volumes (visible in `docker volume ls`)
+- Data stored in `/home/login/data` as required by subject
 
 #### Persistence Guarantees
 

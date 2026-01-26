@@ -27,7 +27,7 @@ fi
 # Télécharger WordPress si pas déjà fait
 if [ ! -f /var/www/html/wp-config.php ]; then
     echo "Downloading WordPress..."
-    wget -q https://wordpress.org/latest.tar.gz -O /tmp/wordpress.tar.gz
+    wget -q https://wordpress.org/wordpress-6.4.2.tar.gz -O /tmp/wordpress.tar.gz
     echo "Extracting WordPress..."
     tar -xzf /tmp/wordpress.tar.gz -C /var/www/html --strip-components=1
     rm /tmp/wordpress.tar.gz

@@ -1,4 +1,4 @@
-FROM alpine:3.19
+FROM alpine:3.22
 
 RUN apk update && apk add --no-cache \
     php82-fpm \
@@ -22,7 +22,8 @@ COPY tools/setup.sh /usr/local/bin/setup.sh
 
 RUN chmod +x /usr/local/bin/setup.sh && \
     mkdir -p /var/www/html && \
-    chown -R nobody:nobody /var/www/html
+    chown -R nobody:nobody /var/www/html && \
+    ln -s /usr/bin/php82 /usr/bin/php
 
 WORKDIR /var/www/html
 

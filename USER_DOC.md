@@ -34,13 +34,28 @@ Stored in `secrets/` directory:
 ## Checking Services
 
 ```bash
-# Check containers
+# Check containers are running
 docker ps
 
 # Check logs
 docker logs nginx
 docker logs wordpress
 docker logs mariadb
+
+# Check volumes
+docker volume ls
+
+# Check network
+docker network ls
+
+# Check HTTPS is working
+curl -kIs https://login.42.fr | head -5
+
+# Check WordPress users
+docker exec wordpress wp user list --allow-root
+
+# Check database
+docker exec wordpress wp db check --allow-root
 ```
 
 All 3 containers should show status "Up".

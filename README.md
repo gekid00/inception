@@ -1,78 +1,69 @@
-*This project has been created as part of the 42 curriculum by rbourkai.*
-
 # Inception
 
-## Description
+A 42 school project that sets up a multi-container Docker infrastructure running
+NGINX, WordPress, and MariaDB. Each service runs in its own container, built from
+Alpine Linux, and orchestrated with docker-compose.
 
-A Docker infrastructure with NGINX, WordPress, and MariaDB containers, using docker-compose for orchestration.
+## Technologies
 
-## Instructions
+- **Docker / Docker Compose** -- containerization and orchestration
+- **NGINX** -- reverse proxy with TLSv1.2/TLSv1.3 (self-signed certificate)
+- **WordPress 6.4** -- CMS with PHP 8.2-FPM
+- **MariaDB** -- relational database
+- **Alpine Linux 3.22** -- minimal base image for all containers
 
-```bash
-# Build and start
-make
+## Architecture
 
-# Stop
-make down
-
-# Full cleanup
-make fclean
+```
+Client (HTTPS :443) --> NGINX --> WordPress (php-fpm :9000) --> MariaDB (:3306)
 ```
 
-Access: https://rbourkai.42.fr
+- A **bridge network** isolates inter-container communication.
+- **Docker secrets** store database and WordPress passwords securely.
+- **Named volumes** with bind mounts persist data under `/home/$USER/data/`.
 
-## Resources
+## Build and Run
 
-- [Docker Documentation](https://docs.docker.com/)
-- [NGINX Documentation](https://nginx.org/en/docs/)
-- [MariaDB Documentation](https://mariadb.com/kb/en/)
+Prerequisites: Docker, Docker Compose, sudo access.
 
-### AI Usage
+Create a `.env` file in `srcs/` and a `secrets/` directory with the required
+credential files (see `docker-compose.yml` for expected secret paths).
 
-AI was used for documentation structure and troubleshooting. All code was reviewed and understood before integration.
+```bash
+# Build images and start all containers
+make
 
-## Project Description
+# Stop containers
+make down
 
-### Use of Docker
+# Stop and remove volumes
+make clean
 
-Three services containerized with Alpine Linux 3.19:
-- **NGINX**: Web server with TLS
-- **WordPress**: CMS with php-fpm
-- **MariaDB**: Database
+# Full cleanup (volumes + persistent data on host)
+make fclean
 
-### Comparisons
+# Rebuild from scratch
+make re
+```
 
-#### Virtual Machines vs Docker
+## Usage
 
-| Aspect | VM | Docker |
-|--------|-----|--------|
-| Isolation | Full OS | Process-level |
-| Size | GBs | MBs |
-| Boot time | Minutes | Seconds |
+Once running, open your browser and navigate to:
 
-#### Secrets vs Environment Variables
+```
+https://<login>.42.fr
+```
 
-| Aspect | Secrets | Env Variables |
-|--------|---------|---------------|
-| Security | Encrypted | Plain text |
-| Storage | /run/secrets/ | .env file |
+The Makefile automatically adds the domain to `/etc/hosts`. An admin account and
+an author account are created during the first WordPress setup (credentials are
+read from Docker secrets).
 
-**Choice**: Secrets for passwords, env variables for config.
+## Key Concepts
 
-#### Docker Network vs Host Network
-
-| Aspect | Docker Network | Host Network |
-|--------|----------------|--------------|
-| Isolation | Yes | No |
-| Security | Better | Lower |
-
-**Choice**: Bridge network for isolation.
-
-#### Docker Volumes vs Bind Mounts
-
-| Aspect | Volumes | Bind Mounts |
-|--------|---------|-------------|
-| Managed by | Docker | User |
-| Visible in docker volume ls | Yes | No |
-
-**Choice**: Named volumes with local driver, data in /home/login/data.
+| Concept | Implementation |
+|---------|---------------|
+| Container isolation | One process per container, bridge network |
+| TLS termination | Self-signed cert generated at NGINX startup |
+| Secret management | Docker secrets mounted at `/run/secrets/` |
+| Data persistence | Named volumes bound to `/home/$USER/data/` |
+| Health checks | WordPress waits for MariaDB before installing |
